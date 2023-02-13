@@ -1,0 +1,88 @@
+.header .header_search{
+    position: relative;
+    width: calc(100% - 150px);
+}
+.header .header_search input {
+    border-radius: 25px;
+    padding: 12px 30px;
+}
+.header .header_search a {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    font-size: 20px;
+}
+.header .menu{
+    background-color: #ffc038;
+    height: 50px;
+}
+.header .menu ul{
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    align-items: center;
+}
+.header .menu ul li{
+    flex: 1;
+    text-align: center;
+}
+.header .menu ul li a{
+    text-transform: capitalize;
+    color: #000;
+    padding: 0;
+}
+
+#footer .page-logo{
+    width: 200px;
+}
+#footer .page-logo img{
+    width: 100%;
+    height: auto;
+}
+.comic_new .comic{
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 180px;
+    height: auto;
+    text-decoration: none;
+}
+.comic_new .comic .comic_title{
+    position: absolute;
+    bottom: 0;
+    padding: 10px 12px;
+    width: 100%;
+    background-image: linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0.75));
+    color: #fff;
+    margin-bottom: 0;
+}
+.comic_new .comic .comic_chapter{
+    width: max-content;
+    padding: 2px 10px;
+    background: orange;
+    border-radius: 15px;
+    color: #fff;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-weight: bold;
+}
+.block-heading{
+    border-left: 8px solid #56ccf2;
+    color: #56ccf2;
+}
+.block-heading h2{
+    font-weight: 600;
+}
+.slide_comic_hint .comic{
+    text-decoration: none;
+}
+.slide_comic_hint .comic .comic_thumb{
+    height: 240px;
+}
+.slide_comic_hint .comic .comic_thumb img{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
