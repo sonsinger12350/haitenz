@@ -9,17 +9,21 @@ use App\Helpers\Helper;
 
 class ChapterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        if(!@$id){
-            //return redirect('admin/truyen');
+    {   
+        if(empty($_GET['id'])){
+            return redirect('admin/truyen');
         }
-        $chapter = Chapter::with('comic_chapter')->orderBy('id','DESC')->get();
+        $chapter = Chapter::with('comic_chapter')->where('comic',$_GET['id'])->get();
         return view('layouts.admin.page.chapter.index',compact('chapter'));
     }
 
@@ -69,6 +73,8 @@ class ChapterController extends Controller
         $chapter->slug = $data['slug'];
         $chapter->desc = $data['desc'];
         $chapter->show = $data['show'];
+        $comic->created_at  =  time();
+        $comic->updated_at  =  time();
         $imgs = $data['imgs'];        
         $path = 'upload/chapter/';
         $imgs_save = [];
@@ -141,7 +147,8 @@ class ChapterController extends Controller
         $chapter->name = $data['name'];
         $chapter->slug = $data['slug'];
         $chapter->desc = $data['desc'];
-        $chapter->show = $data['show'];          
+        $chapter->show = $data['show'];
+        $comic->updated_at  =  time();  
         if(!empty($data['imgs'])){
             $imgs = $data['imgs'];
             $path = 'upload/chapter/';

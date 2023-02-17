@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Comic;
 use App\Models\Category;
+use App\Models\Author;
 use App\Helpers\Helper;
+use Illuminate\Support\Facades\DB;
 
 class ComicController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +35,8 @@ class ComicController extends Controller
     public function create()
     {        
         $cats = Category::orderBy('id','DESC')->get();
-        return view('layouts.admin.page.comic.create')->with(compact('cats'));
+        $authors = Author::orderBy('id','DESC')->get();
+        return view('layouts.admin.page.comic.create')->with(compact('cats','authors'));
     }
 
     /**
@@ -43,16 +51,20 @@ class ComicController extends Controller
             [
                 'name'      =>  'required|unique:comic|max:255',
                 'cat'       =>  'required|max:20',
-                'desc'      =>  'required',
-                'thumb'     =>  'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
+                'author'     =>  'required|max:255',
+                'desc'      =>  'nullable',
+                'thumb'     =>  'required|image|mimes:jpg,png,jpeg,gif,svg,webp|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
                 'slug'      =>  'nullable|max:255',
                 'show'      =>  'nullable|max:1',
+                'status'    =>  'nullable|max:1',
             ],
             [
                 'name.unique'       =>  'Tên truyện đã tồn tại',
                 'name.required'     =>  'Chưa nhập tên truyện',
-                'desc.required'     =>  'Chưa nhập mô tả truyện',
+                'cat.required'      =>  'Chưa chọn danh mục',
+                'author.required'    =>  'Chưa nhập tác giả',
                 'thumb.required'    =>  'Chưa chọn hình ảnh',
+                'thumb.mimes'       =>  'Hình ảnh không đúng định dạng',
             ]
         );
         if($request->has('show')){
@@ -64,11 +76,14 @@ class ComicController extends Controller
 
         $comic = new Comic;
         $comic->name = $data['name'];
-        $comic->cat = $data['cat'];
+        $comic->cat = implode(',',$data['cat']);
+        $comic->author = $data['author'];
         $comic->slug = $data['slug'];
         $comic->desc = $data['desc'];
         $comic->show = $data['show'];
-        
+        $comic->status = $data['status'];
+        $comic->created_at  =  time();
+        $comic->updated_at  =  time();  
         $get_image = $data['thumb'];
         $path = 'upload/comic';
         $get_name_image = $get_image->getClientOriginalName();
@@ -76,7 +91,7 @@ class ComicController extends Controller
         $new_image = $name_image.rand(0,99).'.'.$get_image->getClientOriginalExtension();
         $get_image->move($path,$new_image);        
         $comic->thumb = $new_image;        
-        $comic->save();       
+        $comic->save(['timestamps' => false]);       
 
         return redirect('admin/truyen')->with('status','Thêm truyện thành công');
     }
@@ -116,17 +131,19 @@ class ComicController extends Controller
     {
         $data = $request->validate(
             [
-                'name'      =>  'required|unique:comic|max:255',
+                'name'      =>  'required|max:255',
                 'cat'       =>  'required|max:20',
-                'desc'      =>  'required',
-                'thumb'     =>  'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
+                'author'     =>  'required|max:255',
+                'desc'      =>  'nullable',
+                'thumb'     =>  'nullable|image|mimes:jpg,png,jpeg,gif,svg,webp|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
                 'slug'      =>  'nullable|max:255',
                 'show'      =>  'nullable|max:1',
+                'status'    =>  'nullable|max:1',
             ],
             [
-                'name.unique'       =>  'Tên truyện đã tồn tại',
                 'name.required'     =>  'Chưa nhập tên truyện',
-                'desc.required'     =>  'Chưa nhập mô tả truyện',
+                'cat.required'      =>  'Chưa chọn danh mục',
+                'author.required'    =>  'Chưa nhập tác giả',
             ]
         );
         if($request->has('show')){
@@ -138,10 +155,13 @@ class ComicController extends Controller
 
         $comic = Comic::find($id);
         $comic->name = $data['name'];
-        $comic->cat = $data['cat'];
+        $comic->cat = implode(',',$data['cat']);
+        $comic->author = $data['author'];
         $comic->slug = $data['slug'];
         $comic->desc = $data['desc'];
-        $comic->show = $data['show'];        
+        $comic->show = $data['show'];
+        $comic->status = $data['status'];
+        $comic->updated_at = time();
         if(!empty($data['thumb'])){
             $get_image = $data['thumb'];
             $path = 'upload/comic/';
@@ -149,7 +169,7 @@ class ComicController extends Controller
             $get_name_image = $get_image->getClientOriginalName();
             $name_image = current(explode('.',$get_name_image));
             $new_image = $name_image.rand(0,99).'.'.$get_image->getClientOriginalExtension();
-            $get_image->move($path,$new_image);        
+            $get_image->move($path,$new_image);
             $comic->thumb = $new_image;
             if(!empty($old['thumb']) && file_exists($old['thumb'])){
                 unlink($old['thumb']);
@@ -174,6 +194,24 @@ class ComicController extends Controller
             unlink($path.$comic['thumb']);
         }
         Comic::find($id)->delete();
-        return redirect('admin/truyen')->with('status','Xóa dữ liệu thành công');
+        DB::statement("ALTER TABLE `comic` AUTO_INCREMENT = 1");
+        return redirect('admin/truyen')->with('status','Xóa dữ liệu thành công');        
+    }
+
+    public function update_comic(Request $request,$id)
+    {       
+        $comic = Comic::find($id);
+        if(!$comic){
+            return response()->json([
+                'status' => 404,
+                'message' => 'Không tìm thấy truyện'
+            ]);
+        }
+        Comic::where('id',$id)->update([$request->column=>$request->val]);
+        
+        return response()->json([
+            'status' => 200,
+            'message' => 'Cập nhật thành công'
+        ]);
     }
 }

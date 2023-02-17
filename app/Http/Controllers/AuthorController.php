@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Category;
+use App\Models\Author;
 use App\Helpers\Helper;
 
-class CategoryController extends Controller
+class AuthorController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,8 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $cats = Category::orderBy('id','DESC')->get();
-        return view('layouts.admin.page.category.index')->with(compact('cats'));
+        $authors = Author::orderBy('id','DESC')->get();
+        return view('layouts.admin.page.author.index',compact('authors'));
     }
 
     /**
@@ -30,7 +26,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('layouts.admin.page.category.create');
+        return view('layouts.admin.page.author.create');
     }
 
     /**
@@ -40,16 +36,15 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {        
+    {
         $data = $request->validate(
             [
-                'name'  =>  'required|unique:cat|max:255',
-                'slug'  =>  'nullable|max:255',
-                'desc'  =>  'nullable|max:500',                
+                'name'  =>  'required|unique:author|max:255',
+                'slug'  =>  'nullable|max:255',              
             ],
             [
-                'name.unique'       =>  'Tên danh mục đã tồn tại',
-                'name.required'     =>  'Chưa nhập tên danh mục',
+                'name.unique'       =>  'Tác giả đã tồn tại',
+                'name.required'     =>  'Chưa nhập tên tác giả',
             ]
         );
         if($request->has('show')){
@@ -58,13 +53,12 @@ class CategoryController extends Controller
             $data['show'] = 0;
         }
         $data['slug'] = Helper::slug($data['name']);
-        $cat = new Category;
-        $cat->name = $data['name'];
-        $cat->slug = $data['slug'];
-        $cat->desc = $data['desc'];
-        $cat->show = $data['show'] ?? 0;
-        $cat->save();        
-        return redirect('admin/danh-muc')->with('status','Thêm danh mục thành công');
+        $author = new Author;
+        $author->name = $data['name'];
+        $author->slug = $data['slug'];
+        $author->show = $data['show'] ?? 0;
+        $author->save();        
+        return redirect('admin/tac-gia')->with('status','Thêm danh mục thành công');
     }
 
     /**
@@ -86,8 +80,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $cat = Category::find($id);
-        return view('layouts.admin.page.category.edit',compact('cat'));
+        $author = Author::find($id);
+        return view('layouts.admin.page.author.edit',compact('author'));
     }
 
     /**
@@ -99,16 +93,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         $data = $request->validate(
             [
-                'name'  =>  'required|unique:cat|max:255',
-                'slug'  =>  'nullable|max:255',
-                'desc'  =>  'nullable|max:500',                
+                'name'  =>  'required|max:255',
+                'slug'  =>  'nullable|max:255',              
             ],
             [
-                'name.unique'       =>  'Tên danh mục đã tồn tại',
-                'name.required'     =>  'Chưa nhập tên danh mục',                
+                'name.required'     =>  'Chưa nhập tên tác giả',
             ]
         );
         if($request->has('show')){
@@ -117,13 +108,12 @@ class CategoryController extends Controller
             $data['show'] = 0;
         }
         $data['slug'] = Helper::slug($data['name']);
-        $cat = Category::find($id);
-        $cat->name = $data['name'];
-        $cat->slug = $data['slug'];
-        $cat->desc = $data['desc'];
-        $cat->show = $data['show'] ?? 0;
-        $cat->save();        
-        return redirect('admin/danh-muc')->with('status','Cập nhật danh mục thành công');
+        $author = Author::find($id);
+        $author->name = $data['name'];
+        $author->slug = $data['slug'];
+        $author->show = $data['show'] ?? 0;
+        $author->save();        
+        return redirect('admin/tac-gia')->with('status','Cập nhật tác giả thành công');
     }
 
     /**
@@ -134,22 +124,22 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Category::find($id)->delete();
-        return redirect('admin/danh-muc')->with('status','Xóa dữ liệu thành công');
+        Author::find($id)->delete();
+        return redirect('admin/tac-gia')->with('status','Xóa dữ liệu thành công');
     }
 
-    public function update_cat(Request $request, $id)
+    public function update_author(Request $request, $id)
     {
-        $id_category = Category::find($id);
+        $author = Author::find($id);
 
-        if(!$id_category) {
+        if(!$author) {
             return response()->json([
                 'status' => 404,
                 'message' => 'Không tìm thấy danh mục'
             ]);
         }
 
-        Category::where('id',$id)->update(['show'=>$request->show]);
+        Author::where('id',$id)->update(['show'=>$request->show]);
 
         return response()->json([
             'status' => 200,

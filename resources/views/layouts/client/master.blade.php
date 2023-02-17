@@ -10,9 +10,9 @@
 
         <!-- module header -->
         @include('layouts.client.module.header')
-
+        
         <!-- index -->
-        @yield('index');
+        @yield('index')
 
         <!-- module footer -->
         @include('layouts.client.module.footer')

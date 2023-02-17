@@ -1,5 +1,118 @@
 @extends('layouts.client.master')
 @section('index')
+<div id="page_comic">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
 
-123
+                <div class="web_breadcrumb">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ config('app.name') }}</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ $comic['name'] }}</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="d-flex comic">
+                    <div class="comic_img me-4">
+                        <img src="{{ asset('upload/comic/'.$comic['thumb']) }}" alt="{{ $comic['name'] }}">
+                    </div>
+                    <div class="comic_info">
+                        <h3 class="mb-0">{{ $comic['name'] }}</h3>
+                        <p class="small fst-italic">[Cập nhật lúc {{ Helper::dateTimeFormat($comic['updated_at']) }}]</p>
+                        <p>Chapter mới nhất: <a href="#" class="btn btn-sm btn-outline-primary btn-outline-web">Chapter 1</a></p>
+                        <p>Tác giả: <a href="{{ url('tac-gia/'.$comic['Author']['slug']) }}">{{ $comic['Author']['name'] }}</a></p>
+                        <p>Tình trạng: </p>
+                        <p>Số chương: </p>
+                        <p>Lượt xem: </p>
+                        <p>
+                            Đánh giá: 
+                            <div class="rating justify-start">
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </div>
+
+                        </p>
+                        <div class="mb-4">
+                            <a href="{{ url('the-loai/'.$comic['category']['slug']) }}" class="btn btn-sm btn-outline-primary btn-outline-web">{{ $comic['category']['name'] }}</a>
+                        </div>
+                        <div class="comic_action mb-2">                            
+                            <div class="justify-start">
+                                <a href="#" class="btn btn-success me-2">Đọc từ đầu</a>
+                                <a href="#" class="btn btn-primary me-4">Đọc mới nhất</a>
+                                <div class="justify-start">
+                                    <a href="javascript:void(0)" class="follow text-danger me-2" data-id="{{ $comic['id'] }}" data-follow="{{ in_array($comic['id'], $follow) ? 0 : 1 }}"><i class="fa-{{ in_array($comic['id'], $follow) ? 'solid' : 'regular' }} fa-heart"></i></a>
+                                    <span><b>5.192</b> người đã theo dõi</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p>{{ $comic['desc'] }}</p>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <h3 class="color_main"><i class="fa-solid fa-list-ul"></i> Danh sách chapter</h3>
+                    <div class="list_chapter shadow rounded border p-3">
+                        <a href="#" class="chapter justify-between"><p class="mb-0">Chương 1</p><p class="mb-0">10/10/2022</p></a>
+                    </div>
+                </div>                
+                <div>
+                    <h4 class="color_main">Truyện liên quan</h4>
+                    <div class="swiper slide_comic_relate slide_comic">
+                        <div class="swiper-wrapper">
+                            @foreach($relate as $v)
+                                <div class="swiper-slide">
+                                    <a href="{{ url('truyen/'.$v['slug']) }}" class="d-block comic">
+                                        <div class="comic_thumb text-center mb-3">              
+                                            <div class="comic_info d-flex">
+                                                <p class="mb-0 time me-2 bg-warning"><i class="fa fa-eye"></i> {{ $v['count_view'] }}</p>
+                                                <p class="mb-0 hot">Hot</p>
+                                            </div>
+                                            <img src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}">                                    
+                                        </div>
+                                        <h5 class="mb-0 text-center text-black fw-bold">{{ $v['name'] }}</h5>
+                                        <p class="mb-0 text-center text-black">Chapter 1</p>
+                                    </a>                                    
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        let swiper = new Swiper(".slide_comic_relate", {
+            loop:true,
+            speed:300,
+            pagination: {
+                clickable: true,
+            },
+            breakpoints: {
+                480: {
+                    slidesPerView: 3,
+                    spaceBetween: 15,
+                },
+                768: {
+                    slidesPerView: 4,
+                    spaceBetween: 15,
+                },
+                1198: {
+                    slidesPerView: 5,
+                    spaceBetween: 10,
+                },
+                1199: {
+                    slidesPerView: 6,
+                    spaceBetween: 10,
+                }
+            }
+        });
+    }, 500);    
+</script>
 @endsection

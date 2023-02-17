@@ -75,13 +75,14 @@
 .block-heading h2{
     font-weight: 600;
 }
-.slide_comic_hint .comic{
+.slide_comic_hot .comic{
     text-decoration: none;
 }
-.slide_comic_hint .comic .comic_thumb{
+.slide_comic_hot .comic .comic_thumb{
     height: 240px;
+    position: relative;
 }
-.slide_comic_hint .comic .comic_thumb img{
+.slide_comic_hot .comic .comic_thumb img{
     width: 100%;
     height: 100%;
     border-radius: 5px;

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Comic extends Model
 {
     use HasFactory;
-    public $timestamps = true;
+    public $timestamps = false;
     public $fillale = [
-        'id','name','slug','thumb','desc','cat','show'
+        'id','name','slug','thumb','desc','cat','author','hot','show','status','count_view','created_at','updated_at'
     ];
     protected $table = 'comic';
 
@@ -19,5 +19,8 @@ class Comic extends Model
     }
     public function chapter(){
         return $this->hasMany('App\Models\Chapter');
+    }
+    public function author(){
+        return $this->belongsTo('App\Models\Author','author','id');
     }
 }

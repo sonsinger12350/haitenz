@@ -23,13 +23,11 @@
                             @enderror
                         </div>
                         <div class="form-floating mb-4">    
-                            <select class="form-control @error('name') is-invalid @enderror" name="cat" id="cat">
-                                <option value="" selected disabled hidden>--- Chọn danh mục ---</option>
+                            <select class="form-control @error('name') is-invalid @enderror" name="cat[]" id="cat">
                                 @foreach($cats as $v)
                                     <option value="{{ $v['id'] }}" {{ $comic['cat']==$v['id'] ? 'selected' : ''}}>{{ $v['name'] }}</option>
                                 @endforeach
                             </select>                        
-                            <label for="name">Tên danh mục</label>
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -49,8 +47,12 @@
                             @enderror
                         </div>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" {{ $comic['show']==1 ? 'checked' : ''}} type="checkbox" id="show" name="show" value="1">
+                            <input class="form-check-input" {{ $comic['show']==1 ? 'checked' : ''}} type="checkbox" id="show" name="show" value="{{ $v['show']==0 ? 1 : 0 }}">
                             <label class="form-check-label" for="show">Hiển thị</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" {{ $comic['hot']==1 ? 'checked' : ''}} type="checkbox" id="hot" name="hot" value="{{ $v['hot']==0 ? 1 : 0 }}">
+                            <label class="form-check-label" for="hot">Nổi bật</label>
                         </div>
                         <div class="text-center"><button class="btn btn-primary" type="submit">Lưu</button></div>
                     </form>
@@ -60,3 +62,13 @@
     </div>
 </div>
 @endsection
+@push("js")
+    <script>
+        $('#cat').select2({
+            multiple: true,
+            placeholder: 'Chọn danh mục',
+            allowClear: true,                    
+        });
+        $('#cat').val('{{ $comic['cat'] }}').trigger('change');
+    </script>
+@endpush

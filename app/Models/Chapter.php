@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Chapter extends Model
 {
     use HasFactory;
-    public $timestamps = true;
+    public $timestamps = false;
     public $fillale = [
-        'comic','name','slug','desc','imgs','show'
+        'comic','name','slug','desc','imgs','show','created_at','updated_at'
     ];
     protected $primaryKey = 'id';
     protected $table = 'chapter';   

@@ -15,16 +15,16 @@
                                         <a class="nav-link {{Route::is('danh-muc.*') ? 'active' : '' }}" href="{{route('danh-muc.index')}}">Quản lí danh mục</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link {{Route::is('truyen.*') ? 'active' : '' }}"  href="{{route('truyen.index')}}">Quản lí truyện</a>
+                                        <a class="nav-link {{Route::is('truyen.*') || Route::is('chapter.*') ? 'active' : '' }}"  href="{{route('truyen.index')}}">Quản lí truyện</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link {{Route::is('chapter.*') ? 'active' : '' }}" href="{{route('chapter.index')}}">Chapter</a>
-                                    </li>                                    
-                                </ul>                                
+                                        <a class="nav-link {{Route::is('tac-gia.*') ? 'active' : '' }}"  href="{{route('tac-gia.index')}}">Quản lí tác giả</a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </nav>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
