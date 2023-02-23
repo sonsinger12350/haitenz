@@ -1,7 +1,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>{{ config('app.name') }}</title>
+<title>
+    @hasSection('title')
+        @yield('title')
+    @else
+        {{ config('app.name') }}
+    @endif
+</title>
 <link rel="icon" type="image/x-icon" href="{{ asset('upload/static/logo/logo.png') }}">
 
 <!-- CSRF Token -->

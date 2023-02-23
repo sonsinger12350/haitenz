@@ -1,4 +1,7 @@
 @extends('layouts.client.master')
+
+@section('title') {{ $cat['name'] }} @endsection
+
 @section('index')
 <div class="container mt-4 cat_comic">
     <div class="block-heading mb-4">

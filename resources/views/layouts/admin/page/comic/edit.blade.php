@@ -23,12 +23,23 @@
                             @enderror
                         </div>
                         <div class="form-floating mb-4">    
-                            <select class="form-control @error('name') is-invalid @enderror" name="cat[]" id="cat">
+                            <select class="form-control @error('cat') is-invalid @enderror" name="cat[]" id="cat" multiple>
                                 @foreach($cats as $v)
-                                    <option value="{{ $v['id'] }}" {{ $comic['cat']==$v['id'] ? 'selected' : ''}}>{{ $v['name'] }}</option>
+                                    <option value="{{ $v['id'] }}" {{ in_array($v['id'],$cat) ? 'selected' :'' }}>{{ $v['name'] }}</option>
                                 @endforeach
                             </select>                        
-                            @error('name')
+                            @error('cat')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-floating mb-4">
+                            <select name="author" id="author" class="form-select @error('author') is-invalid @enderror">
+                                @foreach($authors as $v)
+                                    <option value="{{ $v['id'] }}" {{ $comic['author']==$v['id'] ? 'selected' : '' }}>{{ $v['name'] }}</option>
+                                @endforeach
+                            </select>
+                            <label for="author">Tác giả</label>
+                            @error('author')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -47,11 +58,11 @@
                             @enderror
                         </div>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" {{ $comic['show']==1 ? 'checked' : ''}} type="checkbox" id="show" name="show" value="{{ $v['show']==0 ? 1 : 0 }}">
+                            <input class="form-check-input" {{ $comic['show']==1 ? 'checked' : ''}} type="checkbox" id="show" name="show" value="1">
                             <label class="form-check-label" for="show">Hiển thị</label>
                         </div>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" {{ $comic['hot']==1 ? 'checked' : ''}} type="checkbox" id="hot" name="hot" value="{{ $v['hot']==0 ? 1 : 0 }}">
+                            <input class="form-check-input" {{ $comic['hot']==1 ? 'checked' : ''}} type="checkbox" id="hot" name="hot" value="1">
                             <label class="form-check-label" for="hot">Nổi bật</label>
                         </div>
                         <div class="text-center"><button class="btn btn-primary" type="submit">Lưu</button></div>
@@ -69,6 +80,5 @@
             placeholder: 'Chọn danh mục',
             allowClear: true,                    
         });
-        $('#cat').val('{{ $comic['cat'] }}').trigger('change');
     </script>
 @endpush

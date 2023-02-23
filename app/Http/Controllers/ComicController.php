@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comic;
+use App\Models\Chapter;
 use App\Models\Category;
 use App\Models\Author;
 use App\Helpers\Helper;
@@ -23,7 +24,18 @@ class ComicController extends Controller
      */
     public function index()
     {
-        $comic = Comic::with('Category')->orderBy('id','DESC')->get();
+        $cats = Category::get()->keyBy('id');
+
+        $comic = Comic::with(['Category'])->orderBy('id','DESC')->get();
+        foreach ($comic as $k => $v) {
+            $cat_ar = explode(',',$v['cat']);
+            $cat = [];
+            foreach ($cat_ar as $v1) {
+                $cat[] = $cats[$v1]['name'];
+            }
+            $comic[$k]['cat_name'] = $cat;
+            $comic[$k]['count_chapter'] = Chapter::where('comic', '=', $v['id'])->count();
+        }  
         return view('layouts.admin.page.comic.index')->with(compact('comic'));
     }
 
@@ -81,9 +93,10 @@ class ComicController extends Controller
         $comic->slug = $data['slug'];
         $comic->desc = $data['desc'];
         $comic->show = $data['show'];
-        $comic->status = $data['status'];
-        $comic->created_at  =  time();
-        $comic->updated_at  =  time();  
+        $time = time();
+        $comic->created_at  =  $time;
+        $comic->updated_at  =  $time;  
+        $comic->updated_chapter  =  $time;  
         $get_image = $data['thumb'];
         $path = 'upload/comic';
         $get_name_image = $get_image->getClientOriginalName();
@@ -116,8 +129,10 @@ class ComicController extends Controller
     public function edit($id)
     {
         $comic = Comic::find($id);
+        $cat = !empty($comic['cat']) ? explode(',',$comic['cat']) : [];
         $cats = Category::orderBy('id','DESC')->get();
-        return view('layouts.admin.page.comic.edit',compact('comic','cats'));
+        $authors = Author::orderBy('id','DESC')->get();
+        return view('layouts.admin.page.comic.edit',compact('comic', 'cat', 'cats', 'authors'));
     }
 
     /**
@@ -160,7 +175,6 @@ class ComicController extends Controller
         $comic->slug = $data['slug'];
         $comic->desc = $data['desc'];
         $comic->show = $data['show'];
-        $comic->status = $data['status'];
         $comic->updated_at = time();
         if(!empty($data['thumb'])){
             $get_image = $data['thumb'];

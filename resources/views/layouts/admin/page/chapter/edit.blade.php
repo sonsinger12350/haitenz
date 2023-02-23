@@ -16,13 +16,21 @@
                         @method('PUT')
                         @csrf
                         <input type="hidden" name="comic" value="{{ $chapter['comic_chapter']['id'] }}">
+                        <input type="hidden" name="comic_slug" value="{{ @$chapter['comic_chapter']['slug'] }}">
                         <div class="form-floating mb-4">                            
                             <input class="form-control @error('name') is-invalid @enderror" value="{{ $chapter['name'] }}" name="name" id="name" autocomplete="off" placeholder="Tên truyện">
                             <label for="name">Tên chapter</label>
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
-                        </div>                        
+                        </div>       
+                        <div class="form-floating mb-4">                            
+                            <input class="form-control @error('name') is-invalid @enderror" value="{{ $chapter['chap'] }}" name="chap" id="chap" autocomplete="off" placeholder="Chapter số">
+                            <label for="name">Chapter số</label>
+                            @error('chap')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>                 
                         <div class="form-floating mb-4">          
                             <textarea name="desc" id="desc" class="form-control h-100 @error('desc') is-invalid @enderror" placeholder="Mô tả" rows="5" style="resize:none">{{ $chapter['desc'] }}</textarea>                 
                             <label for="desc">Mô tả</label>
@@ -42,7 +50,7 @@
                             @endif
                         </div>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="show" name="show" value="1">
+                            <input id="show" name="show" value="1" {{ $chapter['show']==1 ? 'checked' : '' }} class="form-check-input" type="checkbox">
                             <label class="form-check-label" for="show">Hiển thị</label>
                         </div>
                         <div class="text-center"><button class="btn btn-primary" type="submit">Lưu</button></div>

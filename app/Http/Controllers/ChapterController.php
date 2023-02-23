@@ -23,7 +23,7 @@ class ChapterController extends Controller
         if(empty($_GET['id'])){
             return redirect('admin/truyen');
         }
-        $chapter = Chapter::with('comic_chapter')->where('comic',$_GET['id'])->get();
+        $chapter = Chapter::with('comic_chapter')->where('comic',$_GET['id'])->orderBy('id','DESC')->get();
         return view('layouts.admin.page.chapter.index',compact('chapter'));
     }
 
@@ -48,8 +48,9 @@ class ChapterController extends Controller
     {        
         $data = $request->validate(
             [
-                'comic'         =>  'nullable|max:20',
+                'comic'         =>  'required|max:20',
                 'name'          =>  'required|max:255',
+                'chap'          =>  'required|max:10',
                 'imgs'          =>  'required',
                 'desc'          =>  'nullable',
                 'slug'          =>  'nullable|max:255',                
@@ -58,23 +59,20 @@ class ChapterController extends Controller
             [
                 'name.unique'       =>  'Tên chapter đã tồn tại',
                 'name.required'     =>  'Chưa nhập tên chapter',
+                'chap.required'     =>  'Nhập số chapter',
                 'imgs.required'     =>  'Chưa chọn hình ảnh',
             ]
-        );
-        if($request->has('show')){
-            $data['show'] = $request->get('show');
-        }else{
-            $data['show'] = 0;
-        }
-        $data['slug'] = Helper::slug($data['name']);
+        );        
+        $data['show'] = $request->has('show') ? $request->get('show') : 0;              
         $chapter = new Chapter;
         $chapter->comic = $data['comic'];
+        $chapter->chap = $data['chap'];
         $chapter->name = $data['name'];
-        $chapter->slug = $data['slug'];
+        $chapter->slug = $request->get('comic_slug').'-'.Helper::slug($data['name']);
         $chapter->desc = $data['desc'];
         $chapter->show = $data['show'];
-        $comic->created_at  =  time();
-        $comic->updated_at  =  time();
+        $chapter->created_at  =  time();
+        $chapter->updated_at  =  time();
         $imgs = $data['imgs'];        
         $path = 'upload/chapter/';
         $imgs_save = [];
@@ -87,7 +85,12 @@ class ChapterController extends Controller
         }        
         $chapter->imgs = implode(',',$imgs_save);
         $chapter->save();
-        return redirect('admin/chapter')->with('status','Thêm chapter thành công');
+        $update_comic = [
+            'chapter'           => $data['chap'],
+            'updated_chapter'    =>  time(),
+        ];
+        Comic::where('id',$data['comic'])->update($update_comic);
+        return redirect('admin/chapter?id='.$data['comic'])->with('status','Thêm chapter thành công');
     }
 
     /**
@@ -141,14 +144,13 @@ class ChapterController extends Controller
         }else{
             $data['show'] = 0;
         }
-        $data['slug'] = Helper::slug($data['name']);
         $chapter = Chapter::find($id);
         $chapter->comic = $data['comic'];
         $chapter->name = $data['name'];
-        $chapter->slug = $data['slug'];
+        $chapter->slug = $request->get('comic_slug').'-'.Helper::slug($data['name']);
         $chapter->desc = $data['desc'];
         $chapter->show = $data['show'];
-        $comic->updated_at  =  time();  
+        $chapter->updated_at  =  time();  
         if(!empty($data['imgs'])){
             $imgs = $data['imgs'];
             $path = 'upload/chapter/';
@@ -171,7 +173,7 @@ class ChapterController extends Controller
             }
         }
         $chapter->save();
-        return redirect('admin/chapter')->with('status','Thêm chapter thành công');
+        return redirect('admin/chapter?id='.$data['comic'])->with('status','Cập nhật chapter thành công');
     }
 
     /**
@@ -192,6 +194,6 @@ class ChapterController extends Controller
             }
         }
         Chapter::find($id)->delete();
-        return redirect('admin/chapter')->with('status','Xóa dữ liệu thành công');
-    }    
+        return redirect('admin/chapter?id='.$chapter['comic'])->with('status','Xóa dữ liệu thành công');
+    }
 }

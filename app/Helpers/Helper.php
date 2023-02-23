@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Helpers;
+use App\Models\Chapter;
 
 class Helper{
 
     public static function slug($str) {       
         $str = mb_strtolower($str);        
+        $str = str_replace('.','',$str);
         $str = str_replace(' - ',' ',$str);
         $str = str_replace('- ',' ',$str);
         $str = str_replace(' -',' ',$str);
@@ -31,15 +33,5 @@ class Helper{
 
     public static function dateTimeFormat($time) {               
         return Date('Y-m-d H:i',$time);
-    }
-    public function getCookie(Request $request){
-        $value = $request->cookie($name);
-        return $value;
-    }
-    public function setCookie(Request $request){
-        $minutes = 60;
-        $response = new Response('Set Cookie');
-        $response->withCookie(cookie('name', 'MyValue', $minutes));
-        return $response;
     }
 }

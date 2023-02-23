@@ -20,6 +20,9 @@
                                     <li class="nav-item">
                                         <a class="nav-link {{Route::is('tac-gia.*') ? 'active' : '' }}"  href="{{route('tac-gia.index')}}">Quản lí tác giả</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{Route::is('truyen-noi-bat.*') ? 'active' : '' }}"  href="{{route('truyen-noi-bat.index')}}">Truyện nổi bật</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

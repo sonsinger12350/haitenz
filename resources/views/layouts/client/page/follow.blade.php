@@ -1,7 +1,9 @@
 @extends('layouts.client.master')
 
+@section('title')Truyện đang theo dõi @endsection
+
 @section('index')
-<div class="container mt-4 follow_list comic_list">
+<div class="container mt-4 follow_list comic_list" style="min-height: 65vh;">
     <div class="block-heading mb-4">
         <h2 class="mb-0 ps-2 cat_title">Truyện đang theo dõi</h2>
     </div>

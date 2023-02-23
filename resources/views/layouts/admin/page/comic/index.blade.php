@@ -37,7 +37,7 @@
                                             <td>{{ $v['id'] }}</td>
                                             <td>{{ $v['name'] }}</td>
                                             <td><img src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}" style="max-width:100px"></td>
-                                            <td>{{ $v['category']['name'] }}</td>
+                                            <td>{{ implode(',',$v['cat_name']) }}</td>
                                             <td>
                                                 <div class="form-check form-switch">                                                
                                                     <input class="form-check-input update_comic" {{$v['show']==1 ? 'checked' : ''}} data-id="{{ $v['id'] }}" name="show" value="{{ $v['show']==0 ? 1 : 0 }}" type="checkbox">
@@ -50,7 +50,12 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a href="{{ route('chapter.index',['id'=>$v['id']]) }}" class="btn btn-primary btn-sm me-2">Chapter</a>
+                                                    <a href="{{ route('chapter.index',['id'=>$v['id']]) }}" class="btn btn-primary btn-sm me-2 position-relative">
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                            {{ $v['count_chapter'] }}
+                                                        </span>
+                                                        Chapter
+                                                    </a>
                                                     <a href="{{ route('truyen.edit',[$v['id']]) }}" class="btn btn-warning btn-sm me-2">Sửa</a>
                                                     <form action="{{ route('truyen.destroy',[$v['id']]) }}" method="POST">
                                                         @method('DELETE')

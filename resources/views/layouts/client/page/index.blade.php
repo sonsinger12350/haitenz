@@ -1,4 +1,7 @@
 @extends('layouts.client.master')
+
+@section('title') {{ config('app.name') }} @endsection
+
 @section('index')
 <div class="container mt-4">
     <div class="row comic_new mb-4">
@@ -14,10 +17,15 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 comic_hover">
             <a class="d-block comic mb-2 h-100" href="{{ url('truyen/chuyen-tinh-xom-noi-tru') }}" style="background-image: url({{ asset('upload/comic_new/truyen-chuyen-tinh-xom-noi-tru.webp') }})">
                 <div class="comic_chapter">Chương 1</div>
-                <h4 class="comic_title">Chuyện Tình Xóm Nội Trú</h4>
+                
+                <h4 class="comic_title">
+                    <p class="mb-0 category">Thể loại: Adult, Manhwa 18+, Drama</p>
+                    Chuyện Tình Xóm Nội Trú
+                </h4>
+                <p class="desc mb-0">Nhật Ký Nội Trú là bộ truyện tranh người lớn 18+ Hàn Quốc kể về đời sống tình cảm của cậu sinh viên mới lớn tên Kim Jun Woo. Bước vào đời sống ở trọ, anh chàng này may mắn gặp ngay chị chủ nhà xinh đẹp tên Cho Min Kyung. Vì là truyện 18+ nên sẽ không thiếu những cảnh nóng mặt đâu, còn có NTR không thì chờ bạn khám phá ah. </p>
             </a>
         </div>
         <div class="col-md-3">
@@ -44,14 +52,14 @@
                                 <div class="comic_thumb text-center mb-3">              
                                     <div class="comic_info d-flex">
                                         <p class="mb-0 time me-2">
-                                            <time class="timeago" datetime="{{ Helper::dateTimeFormat($v['updated_at']) }}"></time>
+                                            <time class="timeago" datetime="{{ Helper::dateTimeFormat($v['updated_chapter']) }}"></time>
                                         </p>
                                         <p class="mb-0 hot">Hot</p>
                                     </div>
-                                    <img src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}">                                    
+                                    <img loading="lazy" src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}">                                    
                                 </div>
                                 <h5 class="mb-0 text-center text-black fw-bold">{{ $v['name'] }}</h5>
-                                <p class="mb-0 text-center text-black">Chapter 1</p>
+                                <p class="mb-0 text-center text-black">Chapter {{ $v['chapter'] }}</p>
                             </a>
                             
                         </div>
@@ -71,13 +79,13 @@
                         <div class="comic_thumb text-center mb-3">              
                             <div class="comic_info d-flex">
                                 <p class="mb-0 time me-2">
-                                    <time class="timeago" datetime="{{ Helper::dateTimeFormat($v['updated_at']) }}"></time>
+                                    <time class="timeago" datetime="{{ Helper::dateTimeFormat($v['updated_chapter']) }}"></time>
                                 </p>
                             </div>
-                            <img src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}">                                    
+                            <img loading="lazy" src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}">                                    
                         </div>
                         <h5 class="mb-0 text-center text-black fw-bold">{{ $v['name'] }}</h5>
-                        <p class="mb-0 text-center text-black">Chapter 1</p>
+                        <p class="mb-0 text-center text-black">Chương {{ $v['chapter'] }}</p>
                     </a>                    
                 </div>
             @endforeach                

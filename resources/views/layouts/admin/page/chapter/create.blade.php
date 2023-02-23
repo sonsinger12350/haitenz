@@ -15,21 +15,29 @@
                     <form action="{{route('chapter.store')}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="comic" value="{{ @$_GET['id'] }}">
+                        <input type="hidden" name="comic_slug" value="{{ @$comic['slug'] }}">
                         <div class="form-floating mb-4">                            
                             <input class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" name="name" id="name" autocomplete="off" placeholder="Tên truyện">
                             <label for="name">Tên chapter</label>
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
-                        </div>                        
-                        <div class="form-floating mb-4">          
+                        </div>
+                        <div class="form-floating mb-4">                            
+                            <input class="form-control @error('name') is-invalid @enderror" value="{{ !empty(old('chap')) ? old('chap') : $comic['chapter']+1 }}" name="chap" id="chap" autocomplete="off" placeholder="Chapter số">
+                            <label for="name">Chapter số</label>
+                            @error('chap')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-floating mb-4">
                             <textarea name="desc" id="desc" class="form-control h-100 @error('desc') is-invalid @enderror" placeholder="Mô tả" rows="5" style="resize:none">{{ old('desc') }}</textarea>                 
                             <label for="desc">Mô tả</label>
                             @error('desc')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="mb-4">                            
+                        <div class="mb-4">
                             <input class="form-control-file @error('imgs') is-invalid @enderror" name="imgs[]" type="file" multiple>
                             @error('imgs')
                                 <span class="text-danger">{{ $message }}</span>
