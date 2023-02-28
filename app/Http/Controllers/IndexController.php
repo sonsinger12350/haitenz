@@ -60,6 +60,7 @@ class IndexController extends Controller
         }
         $comic['list_cat'] = $list_cat;
         $chapters = Chapter::where([['show','=','1'],['comic','=',$comic['id']]])->orderBy('id','DESC')->get();
+        
         $relate_where = [
             ['cat','=',$comic['cat']],
             ['show','=',1],
@@ -114,7 +115,24 @@ class IndexController extends Controller
         $cats = Category::orderBy('id','DESC')->get();
         $chapter = Chapter::where('slug',$slug)->first();
         $comic = Comic::where('id',$chapter['comic'])->first();
+        $chapter['imgs'] = explode(',',$chapter['imgs']);
         return view('layouts.client.page.chapter',compact('chapter', 'cats','comic'));
+   }
+    public function search_comic(Request $request) {        
+        $comic = Comic::where('name','LIKE','%'.$request['keyword'].'%')->take(10)->get();
+        $content = '';
+        if(!$comic->isEmpty()) {
+            foreach($comic as $v) {
+                $content .= '<a href="'.route('truyen',['slug'=>$v['slug']]).'" class="search_item justify-between"> <div class="result_img"> <img src="'.asset('upload/comic/'.$v['thumb']).'" alt=""> </div><p class="mb-0 result_name">'.$v['name'].'</p></a>';
+            }            
+        } else {
+            $content = '<p class="mb-0 text-center">Không tìm thấy truyện</p>';
+        }
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Cập nhật thành công',
+            'data'      => $content 
+        ]);
    }
       
 }

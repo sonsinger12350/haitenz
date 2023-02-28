@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Chapter;
 use App\Models\Comic;
 use App\Helpers\Helper;
+use Illuminate\Support\Facades\DB;
 
 class ChapterController extends Controller
 {
@@ -77,9 +78,8 @@ class ChapterController extends Controller
         $path = 'upload/chapter/';
         $imgs_save = [];
         foreach($imgs as $k => $v){
-            $get_name_image = $v->getClientOriginalName();
-            $name_image = current(explode('.',$get_name_image));
-            $new_image = $name_image.rand(0,99).'.'.$v->getClientOriginalExtension();
+            $ext = $v->getClientOriginalExtension();
+            $new_image = $request->get('comic_slug').'-chap-'.$k.'.'.$ext;
             $v->move($path,$new_image);
             $imgs_save[] = $new_image;
         }        
@@ -184,7 +184,9 @@ class ChapterController extends Controller
      */
     public function destroy($id)
     {
-        $chapter = Chapter::find($id);
+        $chapter = Chapter::find($id);  
+        $chap = $chapter['chap'] - 1;
+        $id_comic = $chapter['comic'];
         $path = 'upload/chapter/';
         if(!empty($chapter['imgs'])){
             foreach(explode(',',$chapter['imgs']) as $img){
@@ -193,7 +195,9 @@ class ChapterController extends Controller
                 }
             }
         }
-        Chapter::find($id)->delete();
+        Chapter::find($id)->delete();        
+        DB::statement("ALTER TABLE `chapter` AUTO_INCREMENT = 1");
+        Comic::where('id',$id_comic)->update(['chapter'=>$chap]);
         return redirect('admin/chapter?id='.$chapter['comic'])->with('status','Xóa dữ liệu thành công');
     }
 }

@@ -22,7 +22,6 @@
                                     <th>ID</th>                                    
                                     <th>Truyện</th>
                                     <th>Tên</th>
-                                    <th>Ảnh</th>
                                     <th>Hiển thị</th>
                                     <th style="width:120px;">Hành động</th>
                                 </tr>
@@ -37,12 +36,7 @@
                                         <tr>
                                             <td>{{ $v['id'] }}</td>
                                             <td>{{ $v['comic_chapter']['name'] }}</td>
-                                            <td>{{ $v['name'] }}</td>
-                                            <td>
-                                                @foreach(explode(',',$v['imgs']) as $img)
-                                                    <img src="{{ asset('upload/chapter/'.$img) }}" alt="{{ $v['name'] }}" style="max-width:50px">
-                                                @endforeach
-                                            </td>
+                                            <td>{{ $v['name'] }}</td>                                            
                                             <td>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input"{{$v['show']==1 ? 'checked' : ''}} type="checkbox" id="show" name="show" value="0">

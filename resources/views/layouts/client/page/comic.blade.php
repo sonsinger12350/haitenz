@@ -24,8 +24,8 @@
                     <div class="comic_info">
                         <h3 class="mb-0">{{ $comic['name'] }}</h3>
                         <p class="small fst-italic">[Cập nhật lúc {{ Helper::dateTimeFormat($comic['updated_chapter']) }}]</p>
-                        <p>Chapter mới nhất: <a href="{{ route('chapter',['slug'=>$chapters[0]['slug']]) }}" class="btn btn-sm btn-outline-primary btn-outline-web">Chapter {{ $comic['chapter'] }}</a></p>
-                        <p>Tác giả: <a href="{{ url('tac-gia/'.$comic['Author']['slug']) }}">{{ $comic['Author']['name'] }}</a></p>
+                        <p>Chapter mới nhất: @if(!empty($chapters[0]))<a href="{{ route('chapter',['slug'=>$chapters[0]['slug']]) }}" class="btn btn-sm btn-outline-primary btn-outline-web">Chapter {{ $comic['chapter'] }}</a>@endif</p>
+                        <p>Tác giả: @if(!empty($comic['Author']))<a href="{{ url('tac-gia/'.$comic['Author']['slug']) }}">{{ $comic['Author']['name'] }}</a>@endif</p>
                         <p>Tình trạng: Đang cập nhật</p>
                         <p>Số chương: {{ $comic['chapter_amount'] }}</p>
                         <p>Lượt xem: {{ $comic['count_view'] }}</p>
@@ -40,12 +40,11 @@
                             </div>                            
                         </div>
                         @if(!empty($comic['list_cat']))
-
-                        <div class="mb-4">
-                            @foreach($comic['list_cat'] as $v)
-                                <a href="{{ route('the-loai',['slug'=>$v['slug']]) }}" class="btn btn-sm btn-outline-primary btn-outline-web">{{ $v['name'] }}</a>    
-                            @endforeach
-                        </div>
+                            <div class="mb-4">
+                                @foreach($comic['list_cat'] as $v)
+                                    <a href="{{ route('the-loai',['slug'=>$v['slug']]) }}" class="btn btn-sm btn-outline-primary btn-outline-web">{{ $v['name'] }}</a>    
+                                @endforeach
+                            </div>
                         @endif
                         <div class="comic_action mb-2">                            
                             <div class="justify-start">
@@ -75,31 +74,31 @@
                         @endif
                         
                     </div>
-                </div>                
-                <div>
-                    
-                    <h4 class="color_main">Truyện liên quan</h4>
-                    <div class="swiper slide_comic_relate slide_comic">
-                        <div class="swiper-wrapper">
-                            @foreach($relate as $v)
-                                <div class="swiper-slide">
-                                    <a href="{{ url('truyen/'.$v['slug']) }}" class="d-block comic">
-                                        <div class="comic_thumb text-center mb-3">              
-                                            <div class="comic_info d-flex">
-                                                <p class="mb-0 time me-2 bg-warning"><i class="fa fa-eye"></i> {{ $v['count_view'] }}</p>
-                                                <p class="mb-0 hot">Hot</p>
+                </div>
+                @if(!$relate->isEmpty())
+                    <div>                    
+                        <h4 class="color_main">Truyện liên quan</h4>
+                        <div class="swiper slide_comic_relate slide_comic">
+                            <div class="swiper-wrapper">                            
+                                @foreach($relate as $v)
+                                    <div class="swiper-slide">
+                                        <a href="{{ url('truyen/'.$v['slug']) }}" class="d-block comic">
+                                            <div class="comic_thumb text-center mb-3">              
+                                                <div class="comic_info d-flex">
+                                                    <p class="mb-0 time me-2 bg-warning"><i class="fa fa-eye"></i> {{ $v['count_view'] }}</p>
+                                                    <p class="mb-0 hot">Hot</p>
+                                                </div>
+                                                <img src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}">                                    
                                             </div>
-                                            <img src="{{ asset('upload/comic/'.$v['thumb']) }}" alt="{{ $v['name'] }}">                                    
-                                        </div>
-                                        <h5 class="mb-0 text-center text-black fw-bold">{{ $v['name'] }}</h5>
-                                        <p class="mb-0 text-center text-black">Chapter {{ $v['chapter'] }}</p>
-                                    </a>                                    
-                                </div>
-                            @endforeach
+                                            <h5 class="mb-0 text-center text-black fw-bold">{{ $v['name'] }}</h5>
+                                            <p class="mb-0 text-center text-black">Chapter {{ $v['chapter'] }}</p>
+                                        </a>                                    
+                                    </div>
+                                @endforeach                            
+                            </div>
                         </div>
                     </div>
-
-                </div>                
+                @endif              
             </div>
         </div>
     </div>

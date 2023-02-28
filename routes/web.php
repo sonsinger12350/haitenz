@@ -27,6 +27,7 @@ Route::get('/tac-gia/{slug}', [IndexController::class,'author'])->name('tac-gia'
 Route::get('/theo-doi', [IndexController::class,'follow_list'])->name('theo-doi');
 Route::get('/{slug}.html', [IndexController::class,'chapter'])->name('chapter');
 Route::put('follow/{id}', [IndexController::class, 'follow'])->name("follow");
+Route::put('/search', [IndexController::class, 'search_comic']);
 
 Auth::routes();
 Route::prefix('admin')->middleware('checkLogin')->group(function () {
